@@ -70,7 +70,7 @@ namespace CustomCrops
             else if (asset.AssetNameEquals("TileSheets\\crops"))
             {
                 var oldTex = asset.AsImage().Data;
-                Texture2D newTex = new Texture2D(Game1.graphics.GraphicsDevice, oldTex.Width, Math.Max(oldTex.Height, 60 / 2 * 32));
+                Texture2D newTex = new Texture2D(Game1.graphics.GraphicsDevice, oldTex.Width, Math.Max(oldTex.Height, 4096));
                 asset.ReplaceWith(newTex);
                 asset.AsImage().PatchImage(oldTex);
 
