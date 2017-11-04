@@ -53,7 +53,7 @@ namespace CustomCrops
             else if (asset.AssetNameEquals("Maps\\springobjects"))
             {
                 var oldTex = asset.AsImage().Data;
-                Texture2D newTex = new Texture2D(Game1.graphics.GraphicsDevice, oldTex.Width, Math.Max(oldTex.Height, 1000 / 24 * 16));
+                Texture2D newTex = new Texture2D(Game1.graphics.GraphicsDevice, oldTex.Width, Math.Max(oldTex.Height, 4096));
                 asset.ReplaceWith(newTex);
                 asset.AsImage().PatchImage(oldTex);
 
