@@ -37,6 +37,7 @@ namespace CustomCrops
         }
         public Bonus_ Bonus { get; set; } = null;
 
+        public IList<string> SeedPurchaseRequirements { get; set; } = new List<string>();
         public int SeedPurchasePrice { get; set; }
         public int ProductSellPrice { get; set; }
         public int Edibility { get; set; }
@@ -82,6 +83,13 @@ namespace CustomCrops
             }
             else
                 str += "false";
+            return str;
+        }
+        internal string GetSeedPurchaseRequirementString()
+        {
+            var str = $"{seedId}";
+            foreach (var cond in SeedPurchaseRequirements)
+                str += $"/{cond}";
             return str;
         }
 

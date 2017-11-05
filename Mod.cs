@@ -86,14 +86,18 @@ namespace CustomCrops
 
             if (menu.portraitPerson.name == "Pierre")
             {
-                Log.debug("Adding crops to shop");
+                Log.trace("Adding crops to shop");
 
                 var forSale = Helper.Reflection.GetPrivateValue<List<Item>>(menu, "forSale");
                 var itemPriceAndStock = Helper.Reflection.GetPrivateValue<Dictionary<Item, int[]>>(menu, "itemPriceAndStock");
 
+                var precondMeth = Helper.Reflection.GetPrivateMethod(Game1.currentLocation, "checkEventPrecondition");
                 foreach (var crop in CropData.crops)
                 {
                     if (!crop.Value.Seasons.Contains(Game1.currentSeason))
+                        continue;
+                    if (crop.Value.SeedPurchaseRequirements.Count > 0 &&
+                        precondMeth.Invoke<int>(new object[] { crop.Value.GetSeedPurchaseRequirementString() }) == -1)
                         continue;
                     Item item = new StardewValley.Object(Vector2.Zero, crop.Value.GetSeedId(), int.MaxValue);
                     forSale.Add(item);
