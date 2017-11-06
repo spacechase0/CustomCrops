@@ -86,7 +86,7 @@ namespace CustomCrops
             return str;
         }
 
-        public class Ids
+        internal class Ids
         {
             public int Product;
             public int Seeds;
