@@ -19,7 +19,7 @@ namespace CustomCrops
         
         public override void Entry(IModHelper helper)
         {
-            base.Entry(helper);
+            //base.Entry(helper);
             instance = this;
 
             MenuEvents.MenuChanged += menuChanged;
@@ -74,6 +74,8 @@ namespace CustomCrops
             }
             helper.WriteJsonFile(Path.Combine(Helper.DirectoryPath, "saved-ids.json"), CropData.savedIds);
 
+            RecipeData.parseIngredients();
+
             var editors = ((IList<IAssetEditor>)helper.Content.GetType().GetProperty("AssetEditors", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance).GetValue(Helper.Content));
             editors.Add(new ContentInjector());
         }
@@ -93,12 +95,27 @@ namespace CustomCrops
 
                 foreach (var crop in CropData.crops)
                 {
+
                     if (!crop.Value.Seasons.Contains(Game1.currentSeason))
                         continue;
+
                     Item item = new StardewValley.Object(Vector2.Zero, crop.Value.GetSeedId(), int.MaxValue);
                     forSale.Add(item);
                     itemPriceAndStock.Add(item, new int[] { crop.Value.SeedPurchasePrice, int.MaxValue });
+
+                    foreach (RecipeData recipe in crop.Value.recipes)
+                    {
+                        if (!Game1.player.knowsRecipe(recipe.ProductName))
+                        {
+                            Item recipeItem = new StardewValley.Object(recipe.mealId, 1, true, recipe.RecipePurchasePrice, 0);
+                            forSale.Add(recipeItem);
+                            itemPriceAndStock.Add(recipeItem, new int[] { recipe.RecipePurchasePrice, 1 });
+                        }
+                        
+                    }
                 }
+
+                
             }
         }
     }

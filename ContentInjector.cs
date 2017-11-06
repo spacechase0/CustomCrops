@@ -17,6 +17,8 @@ namespace CustomCrops
         {
             if (asset.AssetNameEquals("Data\\ObjectInformation"))
                 return true;
+            if (asset.AssetNameEquals("Data\\CookingRecipes"))
+                return true;
             if (asset.AssetNameEquals("Data\\Crops"))
                 return true;
             if (asset.AssetNameEquals("Maps\\springobjects"))
@@ -39,6 +41,23 @@ namespace CustomCrops
                     Log.trace($"Injecting to objects: {crop.GetSeedId()}: {crop.GetSeedObjectInformation()}");
                     data.Add(crop.GetSeedId(), crop.GetSeedObjectInformation());
                 }
+
+                foreach (RecipeData recipe in RecipeData.allRecipes)
+                {
+                    data.Add(recipe.mealId, recipe.GetMealObjectInformation());
+                    Log.trace($"Injecting to objects: {recipe.mealId}: {recipe.GetMealObjectInformation()}");
+                }
+            }
+            else if (asset.AssetNameEquals("Data\\CookingRecipes"))
+            {
+                var data = asset.AsDictionary<string, string>().Data;
+
+                foreach (RecipeData recipe in RecipeData.allRecipes)
+                {
+                    data.Add(recipe.ProductName, recipe.getRecipeInformation());
+                    Log.trace($"Injecting to Cooking Recipes: {recipe.ProductName}: {recipe.getRecipeInformation()}");
+                }
+
             }
             else if (asset.AssetNameEquals("Data\\Crops"))
             {
@@ -65,7 +84,13 @@ namespace CustomCrops
                     if (crop.Colors != null && crop.Colors.Count > 0)
                         asset.AsImage().PatchImage(Mod.instance.Helper.Content.Load<Texture2D>($"Crops/{crop.Id}/product-color.png"), null, objectRect(crop.GetProductId() + 1));
                     asset.AsImage().PatchImage(Mod.instance.Helper.Content.Load<Texture2D>($"Crops/{crop.Id}/seeds.png"), null, objectRect(crop.GetSeedId()));
-                }
+
+                    foreach (RecipeData recipe in crop.recipes)
+                    {
+                        Log.trace($"Injecting {recipe.mealId} sprites");
+                        asset.AsImage().PatchImage(Mod.instance.Helper.Content.Load<Texture2D>($"Crops/{crop.Id}/{recipe.ID}.png"), null, objectRect(recipe.mealId));
+                    }
+                }                
             }
             else if (asset.AssetNameEquals("TileSheets\\crops"))
             {
