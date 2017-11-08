@@ -21,6 +21,8 @@ namespace CustomCrops
         public string ProductDescription { get; set; }
         public string SeedDescription { get; set; }
         public RecipeData[] recipes { get; set; } = new RecipeData[0];
+        public string Shop { get; set; } = "Pierre";
+        public bool SellInShop { get; set; } = true;
         public Type_ Type { get; set; } = Type_.Vegetable;
 
         public IList<string> Seasons { get; set; } = new List<string>();
@@ -38,6 +40,7 @@ namespace CustomCrops
         }
         public Bonus_ Bonus { get; set; } = null;
 
+        public IList<string> SeedPurchaseRequirements { get; set; } = new List<string>();
         public int SeedPurchasePrice { get; set; }
         public int ProductSellPrice { get; set; }
         public int Edibility { get; set; }
@@ -83,6 +86,13 @@ namespace CustomCrops
             }
             else
                 str += "false";
+            return str;
+        }
+        internal string GetSeedPurchaseRequirementString()
+        {
+            var str = $"{seedId}";
+            foreach (var cond in SeedPurchaseRequirements)
+                str += $"/{cond}";
             return str;
         }
 

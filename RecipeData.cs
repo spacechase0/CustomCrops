@@ -17,6 +17,8 @@ namespace CustomCrops
         public int ProductSellPrice { get; set; } = 100;
         public int RecipePurchasePrice { get; set; } = 100;
         public int Edibility { get; set; } = 25;
+        public string Shop { get; set; } = "Pierre";
+        public bool SellInShop { get; set; } = true;
         internal int mealId { get; set; }
         internal int cropProductID { get; set; }
         internal static List<RecipeData> allRecipes = new List<RecipeData>();
