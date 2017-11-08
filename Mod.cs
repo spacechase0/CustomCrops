@@ -19,7 +19,6 @@ namespace CustomCrops
         
         public override void Entry(IModHelper helper)
         {
-            base.Entry(helper);
             instance = this;
 
             MenuEvents.MenuChanged += menuChanged;
