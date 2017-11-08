@@ -73,6 +73,8 @@ namespace CustomCrops
             }
             helper.WriteJsonFile(Path.Combine(Helper.DirectoryPath, "saved-ids.json"), CropData.savedIds);
 
+            RecipeData.parseIngredients();
+
             var editors = ((IList<IAssetEditor>)helper.Content.GetType().GetProperty("AssetEditors", BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance).GetValue(Helper.Content));
             editors.Add(new ContentInjector());
         }
@@ -83,8 +85,7 @@ namespace CustomCrops
             if (menu == null || menu.portraitPerson == null)
                 return;
 
-            if (menu.portraitPerson.name == "Pierre")
-            {
+                string shop = menu.portraitPerson.name;
                 Log.trace("Adding crops to shop");
 
                 var forSale = Helper.Reflection.GetPrivateValue<List<Item>>(menu, "forSale");
@@ -93,16 +94,34 @@ namespace CustomCrops
                 var precondMeth = Helper.Reflection.GetPrivateMethod(Game1.currentLocation, "checkEventPrecondition");
                 foreach (var crop in CropData.crops)
                 {
+
                     if (!crop.Value.Seasons.Contains(Game1.currentSeason))
                         continue;
                     if (crop.Value.SeedPurchaseRequirements.Count > 0 &&
                         precondMeth.Invoke<int>(new object[] { crop.Value.GetSeedPurchaseRequirementString() }) == -1)
                         continue;
+
+
+                    if (crop.Value.SellInShop && crop.Value.Shop == shop)
+                    {
                     Item item = new StardewValley.Object(Vector2.Zero, crop.Value.GetSeedId(), int.MaxValue);
                     forSale.Add(item);
                     itemPriceAndStock.Add(item, new int[] { crop.Value.SeedPurchasePrice, int.MaxValue });
+                    }
+
+                    foreach (RecipeData recipe in crop.Value.recipes)
+                    {
+                        if (!Game1.player.knowsRecipe(recipe.ProductName) && recipe.SellInShop && recipe.Shop == shop)
+                        {
+                            Item recipeItem = new StardewValley.Object(recipe.mealId, 1, true, recipe.RecipePurchasePrice, 0);
+                            forSale.Add(recipeItem);
+                            itemPriceAndStock.Add(recipeItem, new int[] { recipe.RecipePurchasePrice, 1 });
+                        }
+                        
+                    }
                 }
-            }
+
+                
         }
     }
 }
