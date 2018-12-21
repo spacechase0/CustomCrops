@@ -34,7 +34,10 @@ namespace CustomCrops
 
             CropData.crops.Clear();
             Log.info("Registering custom crops...");
-            foreach (var folderPath in Directory.EnumerateDirectories(Path.Combine(helper.DirectoryPath, "Crops")))
+            DirectoryInfo cropsFolder = new DirectoryInfo(Path.Combine(helper.DirectoryPath, "Crops"));
+            if (!cropsFolder.Exists)
+                cropsFolder.Create();
+            foreach (var folderPath in Directory.EnumerateDirectories(cropsFolder.FullName))
             {
                 IContentPack contentPack = this.Helper.ContentPacks.CreateFake(folderPath);
                 try
